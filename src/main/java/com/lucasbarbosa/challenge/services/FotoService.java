@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.lucasbarbosa.challenge.domain.Foto;
 import com.lucasbarbosa.challenge.repositories.FotoRepository;
+import com.lucasbarbosa.challenge.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class FotoService {
@@ -14,6 +15,9 @@ public class FotoService {
 	
 	public Foto buscar(Integer id) {
 		Foto obj = repo.findOne(id);
+		if (obj==null) {
+			throw new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Foto.class.getName());
+		}
 		return obj;
 	}
 
