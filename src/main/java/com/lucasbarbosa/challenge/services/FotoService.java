@@ -1,6 +1,11 @@
 package com.lucasbarbosa.challenge.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.lucasbarbosa.challenge.domain.Foto;
@@ -29,5 +34,14 @@ public class FotoService {
 	public void delete(Integer id) {
 		find(id);
 		repo.delete(id);
+	}
+	
+	public List<Foto> findAll(){
+		return repo.findAll();
+	}
+	
+	public Page<Foto> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
+		PageRequest pagerequest = new PageRequest(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return repo.findAll(pagerequest);
 	}
 }
