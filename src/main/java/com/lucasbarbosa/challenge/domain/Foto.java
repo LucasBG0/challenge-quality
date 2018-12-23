@@ -17,6 +17,8 @@ public class Foto implements Serializable {
 	private String latitude;
 	private String longitude;
 	
+	private String imageUrl;
+	
 	public Foto() {
 	}
 
@@ -74,6 +76,14 @@ public class Foto implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	
 	

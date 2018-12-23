@@ -51,6 +51,12 @@ public class FotoService {
 	}
 	
 	public URI uploadPicture(MultipartFile multipartFile) {
-		return s3Service.uploadFile(multipartFile);
+		URI uri = s3Service.uploadFile(multipartFile);
+		
+		Foto fot = repo.findOne((int) repo.count());
+		fot.setImageUrl(uri.toString());
+		repo.save(fot);
+		
+		return uri;
 	}
 }
