@@ -30,6 +30,9 @@ public class FotoService {
 	
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
+
+	@Value("${img.profile.size}")
+	private Integer size;
 	
 	public Foto find(Integer id) {
 		Foto obj = repo.findOne(id);
@@ -61,9 +64,16 @@ public class FotoService {
 	public URI uploadPicture(MultipartFile multipartFile) {
 		
 		BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+		
+		BufferedImage jpgImageCrop = imageService.getJpgImageFromFile(multipartFile);
+		jpgImageCrop = imageService.cropSquare(jpgImageCrop);
+		jpgImageCrop = imageService.resize(jpgImageCrop, size);
+		
 		String fileName = prefix + (int) repo.count() + ".jpg";
+		String fileNameCrop = prefix + (int) repo.count() + "-crop.jpg";
 		
 		URI uri = s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
+		s3Service.uploadFile(imageService.getInputStream(jpgImageCrop, "jpg"), fileNameCrop, "image");
 		
 		Foto fot = repo.findOne((int) repo.count());
 		fot.setImageUrl(uri.toString());
