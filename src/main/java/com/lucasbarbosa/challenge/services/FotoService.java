@@ -70,15 +70,10 @@ public class FotoService {
 		jpgImageCrop = imageService.resize(jpgImageCrop, size);
 		
 		String fileName = prefix + (int) repo.count() + ".jpg";
-		String fileNameCrop = prefix + (int) repo.count() + "-crop.jpg";
+		String fileNameCrop = prefix + (int) repo.count() + "-small.jpg";
 		
-		URI uri = s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
 		s3Service.uploadFile(imageService.getInputStream(jpgImageCrop, "jpg"), fileNameCrop, "image");
 		
-		Foto fot = repo.findOne((int) repo.count());
-		fot.setImageUrl(uri.toString());
-		repo.save(fot);
-		
-		return uri;
+		return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
 	}
 }
