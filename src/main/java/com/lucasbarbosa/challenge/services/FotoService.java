@@ -1,9 +1,11 @@
 package com.lucasbarbosa.challenge.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -22,6 +24,12 @@ public class FotoService {
 	
 	@Autowired
 	private S3Service s3Service;
+	
+	@Autowired
+	private ImageService imageService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
 	
 	public Foto find(Integer id) {
 		Foto obj = repo.findOne(id);
@@ -51,7 +59,11 @@ public class FotoService {
 	}
 	
 	public URI uploadPicture(MultipartFile multipartFile) {
-		URI uri = s3Service.uploadFile(multipartFile);
+		
+		BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+		String fileName = prefix + (int) repo.count() + ".jpg";
+		
+		URI uri = s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
 		
 		Foto fot = repo.findOne((int) repo.count());
 		fot.setImageUrl(uri.toString());
