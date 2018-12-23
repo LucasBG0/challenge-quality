@@ -1,5 +1,6 @@
 package com.lucasbarbosa.challenge.services;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lucasbarbosa.challenge.domain.Foto;
 import com.lucasbarbosa.challenge.repositories.FotoRepository;
@@ -17,6 +19,9 @@ public class FotoService {
 	
 	@Autowired
 	private FotoRepository repo;
+	
+	@Autowired
+	private S3Service s3Service;
 	
 	public Foto find(Integer id) {
 		Foto obj = repo.findOne(id);
@@ -43,5 +48,9 @@ public class FotoService {
 	public Page<Foto> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
 		PageRequest pagerequest = new PageRequest(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pagerequest);
+	}
+	
+	public URI uploadPicture(MultipartFile multipartFile) {
+		return s3Service.uploadFile(multipartFile);
 	}
 }

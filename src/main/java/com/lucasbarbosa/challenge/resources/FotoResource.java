@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lucasbarbosa.challenge.domain.Foto;
@@ -58,4 +59,11 @@ public class FotoResource {
 		Page<Foto> list = service.findPage(page, linesPerPage, orderBy, direction);
 		return ResponseEntity.ok().body(list);
 	}
+	
+	@RequestMapping(value="/upload", method=RequestMethod.POST)
+	public ResponseEntity<Void> uploadPicture(@RequestParam(name="file") MultipartFile file){
+		URI uri = service.uploadPicture(file);
+		return ResponseEntity.created(uri).build();
+	}
+	
 }
